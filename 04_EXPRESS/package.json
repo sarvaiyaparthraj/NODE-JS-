@@ -1,0 +1,16 @@
+{
+  "name": "_express",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "02_index.js",
+  "scripts": {
+    "dev": "node --watch 02_index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
