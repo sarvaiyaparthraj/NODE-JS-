@@ -5,7 +5,7 @@
   "type": "module",
   "main": "02_index.js",
   "scripts": {
-    "dev": "node --watch 02_index.js"
+    "dev": "node --watch 03_middeleWare.js"
   },
   "keywords": [],
   "author": "",
