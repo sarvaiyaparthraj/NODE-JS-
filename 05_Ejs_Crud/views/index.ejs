@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Data</title>
+</head>
+<body>
+
+    <h1>Student Data</h1>
+
+    <a href="/add">Add Student</a>
+
+    <ul>
+
+        <% StudentData.forEach((student) => { %>
+
+            <li>
+                Name: <%= student.name %>
+                | Age: <%= student.age %>
+            </li>
+
+        <% }) %>
+
+    </ul>
+
+</body>
+</html>
