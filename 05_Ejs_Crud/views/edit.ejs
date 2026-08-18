@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Student Data</title>
+</head>
+<body>
+
+    <h1>Edit Student Data</h1>
+
+    <form action="/edit/<%= student.id %>" method="POST">
+
+        <input
+            type="text"
+            name="name"
+            value="<%= student.name %>"
+        >
+
+        <input
+            type="number"
+            name="age"
+            value="<%= student.age %>"
+        >
+
+        <button type="submit">Update Student Data</button>
+
+    </form>
+
+</body>
+</html>

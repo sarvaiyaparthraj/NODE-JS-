@@ -1,26 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Student Data</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 </head>
 <body>
-
-    <h1>Student Data</h1>
+     <h1>Student Data</h1>
 
     <a href="/add">Add Student</a>
+
+    <hr>
 
     <ul>
 
         <% StudentData.forEach((student) => { %>
 
             <li>
-                Name: <%= student.name %>
-                | Age: <%= student.age %>
+
+                <strong>
+                    Name:
+                </strong>
+
+                <%= student.name %>
+
+                |
+
+                <strong>
+                    Age:
+                </strong>
+
+                <%= student.age %>
+
+
+                &nbsp;&nbsp;
+
+
+                <a href="/edit/<%= student.id %>">
+                    Edit
+                </a>
+
+
+                &nbsp;
+
+
+                <a href="/delete/<%= student.id %>">
+                    Delete
+                </a>
+
             </li>
 
         <% }) %>
 
     </ul>
-
+ 
 </body>
 </html>
