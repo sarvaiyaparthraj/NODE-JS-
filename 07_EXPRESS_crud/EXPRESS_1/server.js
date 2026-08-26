@@ -1,7 +1,7 @@
 
 import express from "express";
 
-
+import HttpError from "./middleware/HttpError.js";
 
 const app = express();
 
