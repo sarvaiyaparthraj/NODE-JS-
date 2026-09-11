@@ -3,6 +3,8 @@ import express from "express";
 
 import HttpError from "./middleware/httpError.js";
 import connectDB from "./config/db.js";
+import studentroutes from "./routes/student.routes.js"
+
 
 const app = express();
 
