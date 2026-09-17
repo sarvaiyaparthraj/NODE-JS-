@@ -2,22 +2,22 @@ import mongoose from "mongoose";
 
 async function connectDB() {
 
-  try {
-    await mongoose.connect("mongodb://127.0.0.1:27017/sms");
+    try {
 
-    console.log("MongoDB connected successfully");
+        const connect = await mongoose.connect(
+            "mongodb://127.0.0.1:27017/studentManagementSystem"
+        );
 
-    return true;
+        console.log("DB Connected");
 
-  } catch (error) {
+        return connect;
 
-    console.log("MongoDB connection failed", error);
+    } catch (err) {
 
-    return false;
+        console.log(err.message);
+        throw err;
 
-  }
-
+    }
 }
-
 
 export default connectDB;

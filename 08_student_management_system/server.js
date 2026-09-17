@@ -1,57 +1,68 @@
-
 import express from "express";
-
-import HttpError from "./middleware/httpError.js";
-import connectDB from "./config/db.js";
-import studentroutes from "./routes/student.routes.js"
-
+import httpError from "./middleware/httpError.js";
+import connectDB from "./config/DB.js";
+import studentRoutes from "./routes/student.Routes.js"
 
 const app = express();
 
+app.use(express.json());
+
+app.use("/student", studentRoutes);
 app.get("/", (req, res) => {
-  res.json({
-    message: "hello from my new server",
-  });
+
+    return res.json({
+        message: "Student management system"
+    });
+
 });
 
-// Undefined Routes
+
+// 404 middleware
 app.use((req, res, next) => {
-  return next(new HttpError("Request route not found", 404));
+
+    return next(
+        new httpError("Request not found", 404)
+    );
+
 });
 
-// Centralized Error Handler
+
+// Error handling middleware
 app.use((error, req, res, next) => {
-  if (res.headersSent) {
-    return next(error);
-  }
 
-  res.status(error.statusCode || 500);
-
-  res.json({
-    message: error.message || "Internal server error",
-  });
-});
-
-const port = 5000;
-
-async function StartServer() {
-  try {
-    const connect = await connectDB();
-
-    if (!connect) {
-      throw new Error("Failed to connect DB");
+    if (res.headersSent) {
+        return next(error);
     }
 
-    app.listen(port, (error) => {
-      if (error) {
-        return console.log(error.message);
-      }
-
-      console.log(`Server running on port ${port}`);
+    return res.status(error.statusCode || 500).json({
+        message: error.message || "Internal server error"
     });
-  } catch (error) {
-    console.log(error.message);
-  }
+
+});
+
+
+const port = 1000;
+
+
+async function startServer() {
+
+    try {
+
+        const connect = await connectDB();
+
+        if (!connect) {
+            throw new Error("Failed to connect DB");
+        }
+
+        app.listen(port, () => {
+            console.log(`Server running on port ${port}`);
+        });
+
+    } catch (err) {
+
+        console.log(err.message);
+
+    }
 }
 
-StartServer();
+startServer();
