@@ -1,5 +1,5 @@
 import express, { json } from "express";
-import HtppError from "./middleware/HttpError";
+import HtppError from "../middleware/HttpError";
 
 const app = express();
 app.use(express.json());
