@@ -1,59 +1,56 @@
-
 import express from "express";
-import httpError from "./middleware/httpError.js";
-import dotenv from "dotenv";
+import "dotenv/config";
+import HttpError from "./middleware/HttpError.js";
 import connectDB from "./config/db.js";
-
-dotenv.config({ path: "./.env" });
 
 const app = express();
 
 app.use(express.json());
 
 app.get("/", (req, res) => {
-    res.json("event management system");
+  res.json({
+    message: "Event Management System ",
+  });
 });
 
-// Route not found
+// Undefined Routes
 app.use((req, res, next) => {
-    return next(new httpError("request routes not found", 404));
+  return next(new HttpError("request route not found", 404));
 });
 
-// Error handler
+// Centralize Error
 app.use((error, req, res, next) => {
-    if (res.headersSent) {
-        return next(error);
-    }
+  if (res.headersSent) {
+    return next(error);
+  }
 
-    return res
-        .status(error.statusCode || 500)
-        .json({
-            message: error.message || "internal server error"
-        });
+  res.status(error.statuscode || 500);
+
+  res.json({
+    message: error.message || "internal server error",
+  });
 });
 
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 async function StartServer() {
-    try {
-        const connect = await connectDB();
+  try {
+    const connect = await connectDB();
 
-        if (!connect) {
-            return console.log("connect db is failed");
-        }
-
-        app.listen(port, (error) => {
-            if (error) {
-                return console.log(error.message);
-            }
-
-            console.log(`server running on port ${port}`);
-        });
-
-    } catch (error) {
-        console.log(error.message);
+    if (!connect) {
+      throw new Error("failed to connect DB");
     }
+
+    app.listen(port, (error) => {
+      if (error) {
+        return console.log(error.message);
+      }
+
+      console.log(`server running on port ${port}`);
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
 }
 
 StartServer();
-
