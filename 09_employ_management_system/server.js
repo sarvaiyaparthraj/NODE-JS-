@@ -1,37 +1,29 @@
-import express, { json } from "express";
-import HtppError from "../middleware/HttpError";
+import express from "express";
+import dotenv from "dotenv";
+import connectDB from "./config/db.js";
+import employeeRoutes from "./routes/employee.routes.js";
 
+dotenv.config();
 const app = express();
-app.use(express.json());
-app.use("/employee",employyRouts);
-app.get("/",(req,res)=>{
-    res.json("hello from my server ");
-});
+const port = process.env.PORT || 5000;
 
-app.use((req, res, next) => {
-  return next(new HttpError("requested route not found", 404));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.set("view engine", "ejs");
+app.set("views", "./views");
+app.use("/", employeeRoutes);
+
+app.use((req, res, next) => next(new (class extends Error { constructor(){ super("Requested route not found"); this.statusCode=404; } })()));
+app.use((err, req, res, next) => {
+  console.error(err);
+  const status = err.statusCode || 500;
+  if (req.path.startsWith("/api/")) return res.status(status).json({ message: err.message || "Internal server error" });
+  res.status(status).render("error", { message: err.message || "Internal server error" });
 });
-const port = 5000;
 
 async function startServer() {
-  try {
-    const connect = await connectDB();
-
-    if (!connect) {
-      throw new Error("failed to connect db");
-    }
-
-    app.listen(port, (err) => {
-      if (err) {
-        return console.log(err.message);
-      }
-
-      console.log(`server running on port ${port}`);
-    });
-  } catch (error) {
-    console.log(error.message);
-    process.exit(1);
-  }
+  const connected = await connectDB();
+  if (!connected) process.exit(1);
+  app.listen(port, () => console.log(`Server running on http://localhost:${port}`));
 }
-
 startServer();
