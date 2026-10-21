@@ -1,47 +1,72 @@
+
 import express from "express";
+import httpError from "./middleware/httpError.js";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
-import userRouter from "./routes/userRouter.js";
-import HttpError from "./middleware/httpError.js";
+import userRoutes from "./router/userRouter.js"
 
-dotenv.config();
+dotenv.config({path:"./.env"});
 
 const app = express();
+
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-  res.status(200).json({ success: true, message: "JWT Authentication API is running" });
-});
+app.use("/user",userRoutes)
 
-app.use("/user", userRouter);
+app.get("/",(req,res)=>{
 
-app.use((req, res, next) => {
-  next(new HttpError("Route not found", 404));
-});
+    res.json("hello from server !");
 
-app.use((error, req, res, next) => {
-  if (res.headersSent) return next(error);
-  const statusCode = error.statusCode || 500;
-  res.status(statusCode).json({
-    success: false,
-    message: error.message || "Internal server error",
-  });
-});
+})
 
-const port = Number(process.env.PORT) || 5000;
+app.use((req,res,next)=>{
+
+    return next(new httpError("Request routes not found",404));
+
+})
+
+app.use((error,req,res,next)=>{
+
+    if(res.headersSent){
+
+        return next(error)
+    }
+
+    res.status(error.statusCode || 500).json({message:error.message || "internal server error"});
+
+})
+
+
+const port = process.env.PORT || 5000;
 
 async function startServer() {
-  const connected = await connectDB();
-  if (!connected) {
-    console.error("Server not started because MongoDB connection failed. Check MONGODB_URI in .env.");
-    process.exitCode = 1;
-    return;
-  }
 
-  app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-  });
+    try{
+
+        const connect = await connectDB();
+
+        if(!connect){
+        
+            throw new Error("connect db failed");
+
+        }
+
+        app.listen(port,(error)=>{
+
+            if(error){
+                console.log(error.message)
+            }
+
+            console.log(`server running on port ${port}`);
+
+        })
+
+    }catch(error){
+
+        throw new Error(error.message)
+
+    }
+    
 }
 
 startServer();
